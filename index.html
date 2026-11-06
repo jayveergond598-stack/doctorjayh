@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Jay - Dermatologist</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
+        h1 { color: #1a5c8a; border-bottom: 2px solid #1a5c8a; padding-bottom: 8px; }
+        .badge { display: inline-block; background: #e8f4fd; padding: 4px 12px; border-radius: 16px; margin: 4px; font-size: 0.9em; }
+        .section { margin: 24px 0; padding: 16px; background: #f8f9fa; border-radius: 8px; }
+        form { display: flex; flex-direction: column; gap: 12px; }
+        input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1em; }
+        button { background: #1a5c8a; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 1em; cursor: pointer; }
+        button:hover { background: #134a6e; }
+        #msg { margin-top: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Dr. Jay</h1>
+    <p><strong>MBBS · Dermatologist</strong></p>
+    <span class="badge">Online Consultation: 24/7</span>
+    <span class="badge">Offline: 9:00 AM – 4:00 PM</span>
+
+    <div class="section">
+        <h2>Services</h2>
+        <p>All dermatology services available: Hair, Skin, Nails, and more.</p>
+    </div>
+
+    <div class="section">
+        <h2>Book an Appointment</h2>
+        <form id="appointmentForm">
+            <input type="text" name="name" placeholder="Your Name" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <select name="mode" required>
+                <option value="">Select Consultation Mode</option>
+                <option value="online">Online (24/7)</option>
+                <option value="offline">Offline (9 AM – 4 PM)</option>
+            </select>
+            <textarea name="symptoms" rows="3" placeholder="Briefly describe your skin/hair/nail concern" required></textarea>
+            <button type="submit">Submit Appointment Request</button>
+        </form>
+        <div id="msg"></div>
+    </div>
+
+    <script>
+        document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const msg = document.getElementById('msg');
+            const data = Object.fromEntries(new FormData(form));
+            msg.textContent = 'Submitting...';
+            try {
+                const res = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    msg.textContent = 'Appointment request received. Dr. Jay will contact you.';
+                    form.reset();
+                } else {
+                    msg.textContent = 'Something went wrong. Please try again.';
+                }
+            } catch {
+                msg.textContent = 'Network error. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
